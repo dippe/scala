@@ -1,6 +1,7 @@
 package recfun
 
 import common._
+import scala.annotation.tailrec
 
 object Main {
   def main(args: Array[String]) {
@@ -18,7 +19,7 @@ object Main {
   def pascal(col: Int, row: Int): Int = {
     val initList = List(1)
     val lastRow = getPascalRow(initList, row)
-    return lastRow(col)
+    lastRow(col)
   }
 
 
@@ -40,6 +41,22 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
+
+    def getAllCoins(money: Int, coins: List[Int]): List[Int] = {
+      coins
+        .map(coin => genCoins(coin, Math.floor(money / coin).toInt, List()))
+        .reduce((l: List[Int], all: List[Int]) => all ::: l)
+    }
+
+    @tailrec
+    def genCoins(num: Int, count: Int, cl: List[Int]): List[Int] = {
+      if (count > 0) {
+        genCoins(num, count - 1, num :: cl)
+      } else {
+        cl
+      }
+    }
+
     def gc(money: Int, coins: List[Int], len: Int): Int = {
       if (len > 0) {
         coins.combinations(len)
@@ -49,6 +66,17 @@ object Main {
       else
         len
     }
-    gc(money, coins, coins.length)
+
+    def gc2(money: Int, coins: List[Int], len: Int): Int = {
+      if (len > 0) gc2(money, coins, len - 1)
+      coins.combinations(len - 1)
+        .filter(l => l.sum == money)
+        .foreach(l => println(l))
+      9
+    }
+
+    val allCoins = getAllCoins(money, coins)
+    //gc2(money, allCoins, allCoins.length)
+    gc(money, allCoins, allCoins.length)
   }
 }
