@@ -39,5 +39,16 @@ object Main {
   /**
    * Exercise 3
    */
-  def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int = {
+    def gc(money: Int, coins: List[Int], len: Int): Int = {
+      if (len > 0) {
+        coins.combinations(len)
+          .filter(l => l.sum == money)
+          .length + gc(money, coins, len - 1)
+      }
+      else
+        len
+    }
+    gc(money, coins, coins.length)
+  }
 }
